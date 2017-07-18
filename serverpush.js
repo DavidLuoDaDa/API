@@ -1,5 +1,6 @@
 //var socket = io.connect('http://timeinnovation.cloudapp.net:7000');
-var socket = io.connect('http://127.0.0.1:7000');
+//var socket = io.connect('http://127.0.0.1:7000');
+var socket = io.connect('http://220.133.51.181:7000');
 
 var funcName;
 //var CurrentRoom = '';

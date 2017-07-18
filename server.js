@@ -1,4 +1,3 @@
-//lalala
 var server = require('http').createServer().listen(7000);
 var io = require('socket.io')(server);
 
