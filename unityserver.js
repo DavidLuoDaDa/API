@@ -10,6 +10,15 @@ io.sockets.on('connection', function(socket) {
         io.sockets.emit('join', user);
     });
 
+    socket.on('servermove', function(data) {
+        var info = {
+            'socketid': socket.id,
+            'x': data.x,
+            'y': data.y
+        }
+        io.sockets.emit('move', info);
+    });
+
     socket.on('serverbroadcast', function(data) {
         socket.broadcast.emit('broadcast', data);
     });
