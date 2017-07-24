@@ -3,20 +3,19 @@ var io = require('socket.io')(server);
 
 io.sockets.on('connection', function(socket) {
 
-    socket.on('ServerJoin', function(data) {
+    socket.on('serverjoin', function(data) {
         var user = {
-            //'DisplayName': data.DisplayName,
-            'SocketID': socket.id
+            'socketid': socket.id
         };
-        socket.sockets.emit('Join', user);
+        io.sockets.emit('join', user);
     });
 
-    socket.on('ServerBroadcast', function(data) {
-        socket.broadcast.emit('Broadcast', data);
+    socket.on('serverbroadcast', function(data) {
+        socket.broadcast.emit('broadcast', data);
     });
 
-    socket.on('ServerAll', function(data) {
-        io.sockets.emit('All', data);
+    socket.on('serverall', function(data) {
+        io.sockets.emit('all', data);
     });
 
     //socket.on('Chat_JoinRoom', function(data) {      
