@@ -5,7 +5,8 @@ io.sockets.on('connection', function(socket) {
 
     socket.on('serverjoin', function(data) {
         var user = {
-            'socketid': socket.id
+            'socketid': socket.id,
+            'memberid': data.memberid
         };
         io.sockets.emit('join', user);
     });
@@ -13,6 +14,7 @@ io.sockets.on('connection', function(socket) {
     socket.on('servermove', function(data) {
         var info = {
             'socketid': socket.id,
+            'memberid': data.memberid,
             'x': data.x,
             'y': data.y
         }
