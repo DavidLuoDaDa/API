@@ -2,32 +2,62 @@ var server = require('http').createServer().listen(7000);
 var io = require('socket.io')(server);
 const uuidv1 = require('uuid/v1');
 var redis = require('redis'),
-    client = redis.createClient(8000, '220.133.51.181');
+    //client = redis.createClient(8000, '220.133.51.181');
+    client = redis.createClient(8000, '127.0.0.1');
 
 client.auth('@@Hnn731100@@');
-
-client.set(uuidv1().toString(), '123', 'EX', 30);
-
-client.keys('*', function(err, keys) {
-    if (err) { return console.log(err); }
-    var key;
-    for (var i in keys) {
-        key = keys[i];
-        if (key != 'undefined') {
-            console.log(key);
-            return;
-        }
-    }
-});
 
 io.sockets.on('connection', function(socket) {
 
     socket.on('serverjoin', function(data) {
+        var user;
+
+        client.keys('*', function(err, rooms) {
+            //if (err) { return console.log(err); }
+            var room;
+            for (var i in rooms) {
+                room = rooms[i];
+                if (room !== undefined) {
+                    client.get(room, function(err, memberid) {
+                        if (memberid !== undefined && memberid != data.memberid) {
+                            socket.join(room);
+                            user = {
+                                'socketid': socket.id,
+                                'memberid': data.memberid,
+                                'room': room
+                            };
+                            io.to(room).emit('join', user);
+                            client.del(room);
+                            return;
+                        }
+                    });
+                }
+            }
+
+            if (rooms.length === 0) {
+                room = uuidv1().toString();
+                client.set(room, data.memberid, 'EX', 30);
+                //client.set(room, data.memberid);
+                socket.join(room);
+                user = {
+                    'socketid': socket.id,
+                    'memberid': data.memberid,
+                    'room': room
+                };
+                io.to(room).emit('join', user);
+            }
+        });
+
+        //io.sockets.emit('join', user);
+    });
+
+    socket.on('ready', function(data) {
         var user = {
             'socketid': socket.id,
-            'memberid': data.memberid
+            'memberid': data.memberid,
+            'room': data.room
         };
-        io.sockets.emit('join', user);
+        io.to(data.room).emit('join', user);
     });
 
     socket.on('servermove', function(data) {
@@ -37,7 +67,9 @@ io.sockets.on('connection', function(socket) {
             'x': data.x,
             'y': data.y
         }
-        io.sockets.emit('move', info);
+
+        io.to(data.room).emit('move', info);
+        //io.sockets.emit('move', info);
     });
 
     socket.on('serverbroadcast', function(data) {
