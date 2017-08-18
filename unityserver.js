@@ -10,44 +10,52 @@ client.auth('@@Hnn731100@@');
 io.sockets.on('connection', function(socket) {
 
     socket.on('serverjoin', function(data) {
-        var user;
 
-        client.keys('*', function(err, rooms) {
-            //if (err) { return console.log(err); }
-            var room;
-            for (var i in rooms) {
-                room = rooms[i];
-                if (room !== undefined) {
-                    client.get(room, function(err, memberid) {
-                        if (memberid !== undefined && memberid != data.memberid) {
-                            socket.join(room);
-                            user = {
-                                'socketid': socket.id,
-                                'memberid': data.memberid,
-                                'room': room
-                            };
-                            io.to(room).emit('join', user);
-                            client.del(room);
-                            return;
-                        }
-                    });
+        if (data.room === undefined) {
+
+            var user;
+
+            client.keys('*', function(err, rooms) {
+                //if (err) { return console.log(err); }
+                var room;
+                for (var i in rooms) {
+                    room = rooms[i];
+                    if (room !== undefined) {
+                        client.get(room, function(err, memberid) {
+                            if (memberid !== undefined && memberid != data.memberid) {
+                                socket.join(room);
+                                user = {
+                                    'socketid': socket.id,
+                                    'memberid': data.memberid,
+                                    'room': room
+                                };
+                                io.to(room).emit('join', user);
+                                client.del(room, function(err, reply) {
+                                    //if (err) {
+                                    //    console.log(err);
+                                    //} else {
+                                    //    console.log(reply);
+                                    //}
+                                });
+                            }
+                        });
+                    }
                 }
-            }
 
-            if (rooms.length === 0) {
-                room = uuidv1().toString();
-                client.set(room, data.memberid, 'EX', 30);
-                //client.set(room, data.memberid);
-                socket.join(room);
-                user = {
-                    'socketid': socket.id,
-                    'memberid': data.memberid,
-                    'room': room
-                };
-                io.to(room).emit('join', user);
-            }
-        });
-
+                if (rooms.length === 0) {
+                    room = uuidv1().toString();
+                    //client.set(room, data.memberid, 'EX', 30);
+                    client.set(room, data.memberid);
+                    socket.join(room);
+                    user = {
+                        'socketid': socket.id,
+                        'memberid': data.memberid,
+                        'room': room
+                    };
+                    io.to(room).emit('join', user);
+                }
+            });
+        }
         //io.sockets.emit('join', user);
     });
 
