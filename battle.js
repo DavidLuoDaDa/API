@@ -80,6 +80,15 @@ io.sockets.on('connection', function(socket) {
         //io.sockets.emit('move', info);
     });
 
+    socket.on('serverladder', function(data) {
+        var info = {
+            ladder: Math.floor(Math.random() * 11)
+        }
+        setInterval(io.sockets.emit('ladder', info), 1250);
+    });
+
+
+
     socket.on('serverbroadcast', function(data) {
         socket.broadcast.emit('broadcast', data);
     });
