@@ -96,5 +96,5 @@ io.sockets.on('connection', function(socket) {
         io.sockets.emit('ladder', info)
     }
 
-    setInterval(addladder, 1500);
+    setInterval(addladder, 5000);
 });
