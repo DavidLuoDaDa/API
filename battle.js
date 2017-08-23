@@ -87,14 +87,14 @@ io.sockets.on('connection', function(socket) {
     socket.on('serverall', function(data) {
         io.sockets.emit('all', data);
     });
-
-    function addladder() {
-        var info = {
-            ladderx: 1.8 - (Math.random() * 3.6),
-            laddery: -6
-        }
-        io.sockets.emit('ladder', info)
-    }
-
-    setInterval(addladder, 5000);
 });
+
+function addladder() {
+    var info = {
+        ladderx: 1.8 - (Math.random() * 3.6),
+        laddery: -6
+    }
+    io.sockets.emit('ladder', info)
+}
+
+setInterval(addladder, 5000);
