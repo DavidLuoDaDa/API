@@ -90,7 +90,8 @@ io.sockets.on('connection', function(socket) {
 
     function addladder() {
         var info = {
-            ladder: Math.floor(Math.random() * 11)
+            ladderx: 1.8 - (Math.random() * 3.6),
+            laddery: -6
         }
         io.sockets.emit('ladder', info)
     }
