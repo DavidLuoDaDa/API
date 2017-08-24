@@ -62,14 +62,14 @@ io.sockets.on('connection', function(socket) {
         //io.sockets.emit('join', user);
     });
 
-    socket.on('ready', function(data) {
+    socket.on('serverroomready', function(data) {
         var user = {
             'socketid': socket.id,
             'memberid': data.memberid,
             'roleindex': data.roleindex,
             'room': data.room
         };
-        io.to(data.room).emit('join', user);
+        io.to(data.room).emit('roomready', user);
     });
 
     socket.on('servermove', function(data) {
