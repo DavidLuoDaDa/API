@@ -27,6 +27,7 @@ io.sockets.on('connection', function(socket) {
                                 user = {
                                     'socketid': socket.id,
                                     'memberid': data.memberid,
+                                    'roleindex': 2,
                                     'room': room
                                 };
                                 io.to(room).emit('join', user);
@@ -44,12 +45,14 @@ io.sockets.on('connection', function(socket) {
 
                 if (rooms.length === 0) {
                     room = uuidv1().toString();
-                    //client.set(room, data.memberid, 'EX', 30);
+                    //client.set(room, data.memberid, 'EX', 30);                   
+
                     client.set(room, data.memberid);
                     socket.join(room);
                     user = {
                         'socketid': socket.id,
                         'memberid': data.memberid,
+                        'roleindex': 1,
                         'room': room
                     };
                     io.to(room).emit('join', user);
@@ -63,6 +66,7 @@ io.sockets.on('connection', function(socket) {
         var user = {
             'socketid': socket.id,
             'memberid': data.memberid,
+            'roleindex': data.roleindex,
             'room': data.room
         };
         io.to(data.room).emit('join', user);
