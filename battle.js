@@ -45,9 +45,9 @@ io.sockets.on('connection', function(socket) {
 
                 if (rooms.length === 0) {
                     room = uuidv1().toString();
-                    client.set(room, data.memberid, 'EX', 30);
+                    //client.set(room, data.memberid, 'EX', 30);
 
-                    //client.set(room, data.memberid);
+                    client.set(room, data.memberid);
                     socket.join(room);
                     user = {
                         'socketid': socket.id,
@@ -63,24 +63,24 @@ io.sockets.on('connection', function(socket) {
     });
 
     socket.on('serverroomready', function(data) {
-        var user = {
-            'socketid': socket.id,
-            'memberid': data.memberid,
-            'roleindex': data.roleindex,
-            'room': data.room
-        };
-        io.to(data.room).emit('roomready', user);
+        //var user = {
+        //'socketid': socket.id,
+        //'memberid': data.memberid,
+        //'roleindex': data.roleindex,
+        //'room': data.room
+        //};
+        io.to(data.room).emit('roomready', data);
     });
 
     socket.on('servermove', function(data) {
-        var info = {
-            'socketid': socket.id,
-            'memberid': data.memberid,
-            'x': data.x,
-            'y': data.y
-        }
+        //var info = {
+        //'socketid': socket.id,
+        //'memberid': data.memberid,
+        //'x': data.x,
+        //'y': data.y
+        //}
 
-        io.to(data.room).emit('move', info);
+        io.to(data.room).emit('move', data);
         //io.sockets.emit('move', info);
     });
 
