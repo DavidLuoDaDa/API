@@ -45,9 +45,8 @@ io.sockets.on('connection', function(socket) {
 
                 if (rooms.length === 0) {
                     room = uuidv1().toString();
-                    //client.set(room, data.memberid, 'EX', 30);
-
-                    client.set(room, data.memberid);
+                    client.set(room, data.memberid, 'EX', 30);
+                    //client.set(room, data.memberid);
                     socket.join(room);
                     user = {
                         'socketid': socket.id,
