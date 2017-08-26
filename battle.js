@@ -83,6 +83,18 @@ io.sockets.on('connection', function(socket) {
         //io.sockets.emit('move', info);
     });
 
+    socket.on('triggerservermove', function(data) {
+        //var info = {
+        //'socketid': socket.id,
+        //'memberid': data.memberid,
+        //'x': data.x,
+        //'y': data.y
+        //}
+
+        io.to(data.room).emit('triggermove', data);
+        //io.sockets.emit('move', info);
+    });
+
     socket.on('serverbroadcast', function(data) {
         socket.broadcast.emit('broadcast', data);
     });
