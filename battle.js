@@ -95,9 +95,10 @@ io.sockets.on('connection', function(socket) {
 function addladder() {
     var info = {
         ladderx: 1.8 - (Math.random() * 3.6),
-        laddery: -6
+        laddery: -6,
+        ladderindex: Math.floor((Math.random() * 4) + 1)
     }
     io.sockets.emit('ladder', info)
 }
 
-setInterval(addladder, 3000);
+setInterval(addladder, 1500);
