@@ -11,65 +11,59 @@ io.sockets.on('connection', function(socket) {
 
     socket.on('serverjoin', function(data) {
 
-        if (data.room === undefined) {
+        var user;
+        client.keys('*', function(err, rooms) {
+            //if (err) { return console.log(err); }
+            var room;
+            for (var i in rooms) {
+                room = rooms[i];
+                if (room !== undefined) {
+                    client.get(room, function(err, socketid) {
+                        if (socketid !== undefined && socketid != socket.id) {
 
-            var user;
-
-            client.keys('*', function(err, rooms) {
-                //if (err) { return console.log(err); }
-                var room;
-                for (var i in rooms) {
-                    room = rooms[i];
-                    if (room !== undefined) {
-                        client.get(room, function(err, memberid) {
-                            if (memberid !== undefined && memberid != data.memberid) {
-                                socket.join(room);
-                                user = {
-                                    'socketid': socket.id,
-                                    'memberid': data.memberid,
-                                    'roleindex': 2,
-                                    'room': room
-                                };
-                                io.to(room).emit('join', user);
-                                client.del(room, function(err, reply) {
-                                    if (err) {
-                                        console.log(err);
-                                    } else {
-                                        console.log(reply);
-                                    }
-                                });
-                            }
-                        });
-                    }
+                            user = {
+                                'socketid': socket.id,
+                                'enemysocketid': socketid,
+                                'roleindex': 2,
+                                'room': room
+                            };
+                            socket.emit('join', user);
+                            client.del(room, function(err, reply) {
+                                if (err) {
+                                    console.log(err);
+                                } else {
+                                    console.log(reply);
+                                }
+                            });
+                        }
+                    });
                 }
+            }
 
-                if (rooms.length === 0) {
-                    room = uuidv1().toString();
-                    client.set(room, data.memberid, 'EX', 30);
-                    //client.set(room, data.memberid);
-                    socket.join(room);
-                    user = {
-                        'socketid': socket.id,
-                        'memberid': data.memberid,
-                        'roleindex': 1,
-                        'room': room
-                    };
-                    io.to(room).emit('join', user);
-                }
-            });
-        }
+            if (rooms.length === 0) {
+                room = uuidv1().toString();
+                //client.set(room, socket.id, 'EX', 30);
+                client.set(room, socket.id);
+                user = {
+                    'socketid': socket.id,
+                    'roleindex': 1,
+                    'room': room
+                };
+                socket.emit('join', user);
+            }
+        });
     });
 
     socket.on('serverroomready', function(data) {
-        io.to(data.room).emit('roomready', data);
+        socket.broadcast.to(data.enemysocketid).emit('roomready', data);
     });
 
     socket.on('servermove', function(data) {
-        io.to(data.room).emit('move', data);
+        socket.broadcast.to(data.enemysocketid).emit('move', data);
     });
 
     socket.on('triggerservermove', function(data) {
-        io.to(data.room).emit('triggermove', data);
+        socket.broadcast.to(data.enemysocketid).emit('triggermove', data);
     });
 
     socket.on('serverbroadcast', function(data) {
