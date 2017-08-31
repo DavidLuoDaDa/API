@@ -72,6 +72,10 @@ io.sockets.on('connection', function(socket) {
         io.to(data.room).emit('triggermove', data);
     });
 
+    socket.on('serverrestartgame', function(data) {
+        io.to(data.room).emit('restartgame', data);
+    });
+
     socket.on('serverbroadcast', function(data) {
         socket.broadcast.emit('broadcast', data);
     });
