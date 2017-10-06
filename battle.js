@@ -102,4 +102,4 @@ function addladder() {
     io.sockets.emit('ladder', info)
 }
 
-setInterval(addladder, 1200);
+setInterval(addladder, 1000);
