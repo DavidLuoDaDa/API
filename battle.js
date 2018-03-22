@@ -1,4 +1,4 @@
-var server = require('http').createServer().listen(7000);
+var server = require('http').createServer().listen(9000);
 var io = require('socket.io')(server, {
     "serveClient": false,
     "transports": ['websocket', 'polling']
@@ -6,7 +6,7 @@ var io = require('socket.io')(server, {
 
 const uuidv1 = require('uuid/v1');
 var redis = require('redis'),
-    client = redis.createClient(8000, '220.133.51.181');
+    client = redis.createClient(6379, '220.133.51.181');
 //client = redis.createClient(8000, '127.0.0.1');
 
 client.auth('@@Hnn731100@@');
