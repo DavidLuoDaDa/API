@@ -25,14 +25,20 @@ io.sockets.on('connection', function(socket) {
                 for (var i in rooms) {
                     room = rooms[i];
                     if (room !== undefined) {
-                        client.get(room, function(err, memberid) {
-                            if (memberid !== undefined && memberid != data.memberid) {
+                        //client.get(room, function(err, memberid) {
+                        //if (memberid !== undefined && memberid != data.memberid) {
+                        client.get(room, function(err, result) {
+                            result = JSON.parse(result);
+                            if (result !== undefined && result.memberid != data.memberid) {
                                 socket.join(room);
                                 user = {
                                     'socketid': socket.id,
                                     'memberid': data.memberid,
                                     'roleindex': 2,
-                                    'room': room
+                                    'room': room,
+                                    'xarray': result.x,
+                                    'indexarray': result.index,
+                                    'init': 0
                                 };
                                 io.to(room).emit('join', user);
                                 client.del(room, function(err, reply) {
@@ -53,14 +59,17 @@ io.sockets.on('connection', function(socket) {
                     } else {
                         room = data.roomnumber;
                     }
-                    client.set(room, data.memberid, 'EX', 30);
+                    //client.set(room, data.memberid, 'EX', 30);
                     //client.set(room, data.memberid);
+                    client.set(room, JSON.stringify(data), 'EX', 30);
+                    //client.set(room, JSON.stringify(data));
                     socket.join(room);
                     user = {
                         'socketid': socket.id,
                         'memberid': data.memberid,
                         'roleindex': 1,
-                        'room': room
+                        'room': room,
+                        'init': 1
                     };
                     io.to(room).emit('join', user);
                 }
@@ -93,13 +102,13 @@ io.sockets.on('connection', function(socket) {
     });
 });
 
-function addladder() {
-    var info = {
-        ladderx: 1.6 - (Math.random() * 3.2),
-        laddery: -6,
-        ladderindex: Math.floor((Math.random() * 4) + 1)
-    }
-    io.sockets.emit('ladder', info)
-}
+//function addladder() {
+//  var info = {
+//    ladderx: 1.6 - (Math.random() * 3.2),
+//  laddery: -6,
+//ladderindex: Math.floor((Math.random() * 4) + 1)
+//}
+//io.sockets.emit('ladder', info)
+//}
 
-setInterval(addladder, 600);
+//setInterval(addladder, 600);
