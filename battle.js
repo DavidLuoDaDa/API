@@ -16,75 +16,107 @@ io.sockets.on('connection', function(socket) {
 
     socket.on('serverjoin', function(data) {
 
-        //if (room === undefined) {
-        //if (data.roomnumber === undefined) {
-
         var Result;
-        client.keys('*', function(err, rooms) {
 
-            var room = '';
-            for (var i in rooms) {
-                room = rooms[i];
-                if (room !== undefined) {
-
-                    client.get(room, function(err, reply) {
-                        json = JSON.parse(reply);
-                        if (json !== undefined && json.memberid != data.memberid) {
-                            socket.join(room);
-                            Result = {
-                                //'socketid': socket.id,
-                                'memberid': data.memberid,
-                                'room': room,
-                                'init': 0,
-                                'roleindex': 2,
-                                'xarray': json.x,
-                                'indexarray': json.index
-                            };
-                            io.to(room).emit('join', Result);
-                            client.del(room, function(err, reply) {
-                                if (err) {
-                                    console.log(err);
-                                } else {
-                                    console.log(reply);
-                                }
-                            });
-                        }
+        //自訂遊戲
+        if (data.roomnumber !== undefined && data.roomnumber !== null && data.roomnumber !== '') {
+            client.get(data.roomnumber, function(err, reply) {
+                json = JSON.parse(reply);
+                if (json !== undefined &&
+                    json !== null &&
+                    json !== '' &&
+                    json.memberid != data.memberid) {
+                    socket.join(data.roomnumber);
+                    Result = {
+                        //'socketid': socket.id,
+                        'memberid': data.memberid,
+                        'room': data.roomnumber,
+                        'init': 0,
+                        'roleindex': 2,
+                        'xarray': json.x,
+                        'indexarray': json.index
+                    };
+                    io.to(data.roomnumber).emit('join', Result);
+                    client.del(data.roomnumber, function(err, reply) {
+                        //if (err) {
+                        //console.log(err);
+                        //} else {
+                        //console.log(reply);
+                        //}
                     });
-                    break;
-                }
-            }
-
-            if (rooms.length === 0) {
-                if (room === '') {
-                    room = uuidv1().toString();
                 } else {
-                    room = data.roomnumber;
+
+                    //client.set(room, JSON.stringify(data), 'EX', 30);
+                    client.set(data.roomnumber, JSON.stringify(data));
+
+                    socket.join(data.roomnumber);
+                    Result = {
+                        //'socketid': socket.id,
+                        'memberid': data.memberid,
+                        'room': data.roomnumber,
+                        'init': 1,
+                        'roleindex': 1
+                    };
+
+                    io.to(data.roomnumber).emit('join', Result);
                 }
-                //client.set(room, data.memberid, 'EX', 30);
-                //client.set(room, data.memberid);
+            });
+        }
+        //隨機對戰
+        else {
+            client.keys('*', function(err, rooms) {
+                var room = '';
+                for (var i in rooms) {
+                    room = rooms[i];
+                    if (room !== undefined && room !== null && room !== '') {
+                        client.get(room, function(err, reply) {
+                            json = JSON.parse(reply);
+                            if (json !== undefined &&
+                                json !== null &&
+                                json !== '' &&
+                                json.memberid != data.memberid) {
+                                socket.join(room);
+                                Result = {
+                                    //'socketid': socket.id,
+                                    'memberid': data.memberid,
+                                    'room': room,
+                                    'init': 0,
+                                    'roleindex': 2,
+                                    'xarray': json.x,
+                                    'indexarray': json.index
+                                };
+                                io.to(room).emit('join', Result);
+                                client.del(room, function(err, reply) {
+                                    //if (err) {
+                                    //console.log(err);
+                                    //} else {
+                                    //console.log(reply);
+                                    //}
+                                });
+                            }
+                        });
+                        break;
+                    }
+                }
 
-                //var redisdata = {};
-                //redisdata["memberid"] = data.memberid;
-                //redisdata["x"] = data.x;
-                //redisdata["index"] = data.index;
+                if (rooms.length === 0) {
+                    room = uuidv1().toString();
 
-                //client.set(room, JSON.stringify(redisdata), 'EX', 30);
-                //client.set(room, JSON.stringify(data), 'EX', 30);
-                client.set(room, JSON.stringify(data), 'EX', 30);
+                    //client.set(room, JSON.stringify(data), 'EX', 30);
+                    client.set(room, JSON.stringify(data));
 
-                socket.join(room);
-                Result = {
-                    //'socketid': socket.id,
-                    'memberid': data.memberid,
-                    'room': room,
-                    'init': 1,
-                    'roleindex': 1
-                };
-
-                io.to(room).emit('join', Result);
-            }
-        });
-        //}
+                    socket.join(room);
+                    Result = {
+                        //'socketid': socket.id,
+                        'memberid': data.memberid,
+                        'room': room,
+                        'init': 1,
+                        'roleindex': 1
+                    };
+                    io.to(room).emit('join', Result);
+                }
+            });
+        }
     });
 
     socket.on('serverroomready', function(data) {
