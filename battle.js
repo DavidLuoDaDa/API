@@ -46,7 +46,7 @@ io.sockets.on('connection', function(socket) {
                     });
                 } else {
 
-                    client.set(room, JSON.stringify(data), 'EX', 15);
+                    client.set(data.roomnumber, JSON.stringify(data), 'EX', 15);
                     //client.set(data.roomnumber, JSON.stringify(data));
 
                     socket.join(data.roomnumber);
