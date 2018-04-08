@@ -1,9 +1,9 @@
 var server = require('http').createServer().listen(9000);
-var io = require('socket.io')(server);
-//var io = require('socket.io')(server, {
-//"serveClient": false,
-//"transports": ['websocket', 'polling']
-//});
+//var io = require('socket.io')(server);
+var io = require('socket.io')(server, {
+    "serveClient": false,
+    "transports": ['websocket', 'polling']
+});
 
 const uuidv1 = require('uuid/v1');
 var redis = require('redis'),
