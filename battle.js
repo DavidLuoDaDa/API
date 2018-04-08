@@ -46,8 +46,8 @@ io.sockets.on('connection', function(socket) {
                     });
                 } else {
 
-                    //client.set(room, JSON.stringify(data), 'EX', 30);
-                    client.set(data.roomnumber, JSON.stringify(data));
+                    client.set(room, JSON.stringify(data), 'EX', 15);
+                    //client.set(data.roomnumber, JSON.stringify(data));
 
                     socket.join(data.roomnumber);
                     Result = {
@@ -102,8 +102,8 @@ io.sockets.on('connection', function(socket) {
                 if (rooms.length === 0) {
                     room = uuidv1().toString();
 
-                    //client.set(room, JSON.stringify(data), 'EX', 30);
-                    client.set(room, JSON.stringify(data));
+                    client.set(room, JSON.stringify(data), 'EX', 15);
+                    //client.set(room, JSON.stringify(data));
 
                     socket.join(room);
                     Result = {
