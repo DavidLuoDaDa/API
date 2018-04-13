@@ -7,8 +7,8 @@ var http = require('http');
 var app = express();
 app.use(bodyParser.json());
 
-var port = process.env.port || 8000;
-http.createServer(app).listen(port);
+//var port = process.env.port || 8000;
+http.createServer(app).listen(port).listen(8000);
 
 //mongodb
 var MongoClient = require('mongodb').MongoClient;
