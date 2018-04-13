@@ -10,8 +10,9 @@ var io = require('socket.io')(server, {
 
 //redis
 var redis = require('redis'),
-    client = redis.createClient(6379, '220.133.51.181');
-//client = redis.createClient(8000, '127.0.0.1');
+    client = redis.createClient(6379, '127.0.0.1');
+//client = redis.createClient(6379, '220.133.51.181');
+
 
 client.auth('@@Hnn731100@@');
 io.sockets.on('connection', function(socket) {

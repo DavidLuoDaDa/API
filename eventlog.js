@@ -10,7 +10,8 @@ http.createServer(app).listen(8000);
 
 //mongodb
 var MongoClient = require('mongodb').MongoClient;
-var Url = 'mongodb://admin:1qazQAZ3edcEDC@220.133.51.181:27017/admin';
+//var Url = 'mongodb://admin:1qazQAZ3edcEDC@220.133.51.181:27017/admin';
+var Url = 'mongodb://admin:1qazQAZ3edcEDC@127.0.0.1:27017/admin';
 
 app.post('/Event', function(req, res) {
     var InputData = req.body;
